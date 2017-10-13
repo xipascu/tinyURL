@@ -3,19 +3,31 @@
 <head>
   <title>TinyApp</title>
 </head>
-
 <header>
     <% include partials/_header %>
 </header>
 
 <body>
     <h2>URLs</h2>
-    
+        <!-- added d3 exercise 1 -->
+
     <ul>
         <% for (shortURL in urls) { %>
+
             <li>Here's the short URL:<%= shortURL %> - <%= urls[shortURL] %></li>
-        <% }; %>
+           
+            <form action="/urls/<%= shortURL %>/delete" method="POST">
+                <button>
+                    delete
+                </button>
+            </form>
+            
+            <% }; %>
         <a href>Dead link goes here.</a>
+        
+
     </ul>
 </body>
 </html>
+
+
