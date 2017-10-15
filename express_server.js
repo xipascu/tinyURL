@@ -1,22 +1,18 @@
-//declare dependencies
+
 const express = require("express");
-   //allows us to access POST request parameters 
-   //like req.body.longURL stored in urlDatabase
 const bodyParser = require("body-parser");
-  //taking it from an environment variable
 const PORT = process.env.PORT || 8080;
-//declare constants used through
 const app = express(); 
+
 //view engine - what allows you to use ejs
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
+  //generating new URL
 var smallURL = require("./indexShort");
-
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
-
 };
 
 
@@ -34,8 +30,10 @@ app.get('/urls', (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
+  var tinyU = req.params.id;
   let templateVars = {
-    shortURL: req.params.id
+    shortURL: tinyU,
+    longURL: urlDatabase[tinyU]
     };
   res.render("urls_show", templateVars);
 });
@@ -54,18 +52,27 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+
+
   //this should output any request parameters in terminal
 app.post("/urls", (req, res) => {
   var shortURL = smallURL.generateRandomString(6);
   urlDatabase[shortURL] = req.body.longURL;
   console.log(urlDatabase)
-  res.redirect("/urls/:id" + shortURL);    
+  res.redirect("/urls/" + shortURL);    
 });
 
 app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect("/urls");
 });
+
+app.post("/urls/:id", (req,res) =>{
+  urlDatabase[req.params.id] = req.body.longURL;
+  res.render("/urls/" + req.params.id);
+});
+
+
 
 
 app.listen(PORT, () => {

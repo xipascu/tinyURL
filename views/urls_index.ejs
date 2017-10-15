@@ -3,20 +3,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>TinyApp</title>
+  <title>TinyApp Main</title>
 </head>
 <header>
     <% include partials/_header %>
 </header>
 
 <body style="font-size:20px; padding:50px;">
-    <h2>URLs</h2>
-        <!-- added d3 exercise 1 -->
+    <h2>Requested tiny URLs:</h2>
     <ul>
-        <% for (shortURL in urls) { %>
-          <li>Here's the short URL:<%= shortURL %> - <%= urls[shortURL] %></li>
-          <form action="/urls/<%= shortURL %>/delete" method="POST">
-            <input id = "deleteURL" type ="submit" value= "delete" name="deleteURL" style="width: 300px">
+        <% for (tinyU in urls) { %>
+          <li><%= tinyU %> --> 
+            <a href= "<%= urls[tinyU] %>"> <%= urls[tinyU] %></a>
+            <a href = "/urls/ <%= tinyU %>">Edit</a> </li>
+
+          <form action="/urls/<%= tinyU %>/delete" method="POST">
+            <input id = "deleteURL" type ="submit" value= "delete" name="deleteURL">
           </form>
         <% }; %>
         <a href>Dead link for shortening urls page.</a>

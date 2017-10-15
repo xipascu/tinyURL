@@ -8,15 +8,20 @@
 </header>
 
 <body style="font-size:20px; padding:50px;">
-    <h2>URLs</h2>
-    <form action="/urls" method="POST">
-        Input long URL: <input type= "text" name= "longUrl" />
-       <input type= "submit" name= "submit" />
+  <h2>Short URL: <%= shortURL %></h2>
+
+<table>
+  <tr>
+    <form action="/urls/<%= shortURL %>" method="POST" style="margin:150px;">
+        <td>
+            <input id="longURL" type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px">
+        </td>
+        <td>
+            <input type="submit" value="Update">
+        </td>
     </form>
-    
-    <ul>
-        <p>Short url: <%= shortURL %> </p>
-    </ul>
+  </tr>
+</table>
 
 </body>
 </html>
