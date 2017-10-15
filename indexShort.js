@@ -7,6 +7,18 @@ function generateRandomString(numChars) {
    return string;
 }
 
+function authentication (email, password, users) {
+  for (user in users) {
+    if (users[user].email === email && users[user].password === password) {
+      return users[user];
+    } 
+  }
+  return undefined;
+} 
+
+
+
 module.exports = { 
-  generateRandomString: generateRandomString
+  generateRandomString: generateRandomString,
+  authentication: authentication,
 };

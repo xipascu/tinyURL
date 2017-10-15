@@ -7,20 +7,23 @@
             <span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
         </a>
 
-        <% if (username) { %> 
-            <p>Username: <%= username %></p>
+        <% if (user) { %> 
+            <p>Your e-mail is: <%= user.email %></p>
+
             <form action="/logout" method="POST">
             <input type= "submit" value="Logout" />
             </form>
 
-        <% } else { %>}
+        <% } else { %>
 
-        <p><form action="/login" method="POST">
-            <label for= "username">Username: </label>
-            <input id="username" type="text" name="username" placeholder="NalaSimba" required />
-            Password: <input type="password" name="password" />
-            <input type= "submit" value="Login" />
-        </form></p>
+        <form action="/login" method="GET">
+        <input type= "submit" value= "Login">
+        </form>
+
+        <form action="/register" method = "GET">
+        <input type="submit" value="Register">
+        </form>
+
         <% } %>
     
             <ul class="nav navbar-nav">
