@@ -1,3 +1,5 @@
+ <!-- 8080/urls -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,25 +9,17 @@
     <% include partials/_header %>
 </header>
 
-<body>
+<body style="font-size:20px; padding:50px;">
     <h2>URLs</h2>
         <!-- added d3 exercise 1 -->
-
     <ul>
         <% for (shortURL in urls) { %>
-
-            <li>Here's the short URL:<%= shortURL %> - <%= urls[shortURL] %></li>
-           
-            <form action="/urls/<%= shortURL %>/delete" method="POST">
-                <button>
-                    delete
-                </button>
-            </form>
-            
-            <% }; %>
-        <a href>Dead link goes here.</a>
-        
-
+          <li>Here's the short URL:<%= shortURL %> - <%= urls[shortURL] %></li>
+          <form action="/urls/<%= shortURL %>/delete" method="POST">
+            <input id = "deleteURL" type ="submit" value= "delete" name="deleteURL" style="width: 300px">
+          </form>
+        <% }; %>
+        <a href>Dead link for shortening urls page.</a>
     </ul>
 </body>
 </html>

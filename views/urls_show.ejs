@@ -7,11 +7,15 @@
      <% include partials/_header %>
 </header>
 
-<body>
+<body style="font-size:20px; padding:50px;">
     <h2>URLs</h2>
+    <form action="/urls" method="POST">
+        Input long URL: <input type= "text" name= "longUrl" />
+       <input type= "submit" name= "submit" />
+    </form>
     
     <ul>
-        <p>Short url: short url will go here </p>
+        <p>Short url: <%= shortURL %> </p>
     </ul>
 
 </body>
