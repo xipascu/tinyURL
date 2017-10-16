@@ -1,5 +1,3 @@
- <!-- 8080/urls -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,18 +10,17 @@
 <body style="font-size:20px; padding:50px;">
     <h2>Requested tiny URLs:</h2>
     <ul>
-        <% for (tinyU in urls) { %>
+        <% for (var tinyU in urls) { %>
           <li><%= tinyU %> --> 
-            <a href= "<%= urls[tinyU] %>"> <%= urls[tinyU] %></a>
-            <a href = "/urls/ <%= tinyU %>">Edit</a> </li>
+
+            <a href="<%= urls[tinyU] %>"> <%= urls[tinyU] %></a>
+            
+            <a href = "/urls/<%= tinyU %>">Edit</a> </li>
 
           <form action="/urls/<%= tinyU %>/delete" method="POST">
             <input id = "deleteURL" type ="submit" value= "delete" name="deleteURL">
           </form>
-        <% }; %>
-        <a href>Dead link for shortening urls page.</a>
+        <% } %>
     </ul>
 </body>
 </html>
-
-
