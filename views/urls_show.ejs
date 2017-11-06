@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>URLs show</title>
-</head>
-<header>    
-     <% include partials/_header %>
-</header>
-
-<body style="font-size:20px; padding:50px;">
-  <h2>Short URL: <%= shortURL %></h2>
-
-<table>
-  <tr>
-    <form action="/urls/<%= shortURL %>" method="POST" style="margin:150px;">
+<head></head>
+<body>
+  <% include partials/_header %>
+  <table>
+    <tr>
+      <td>
+        <h1>Tiny URL: <%= shortURL %></h1>
+      </td>
+    </tr>
+    </table>
+    <table>
+    <tr>
+      <form action="/urls/<%= shortURL %>" method="POST" style="margin:150px;">
         <td>
-            <input id="longURL" type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px" required>
+          <input id="longURL" type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px">
         </td>
         <td>
-            <input type="submit" value="Update">
+          <input type="submit" value="Update">
         </td>
-    </form>
-  </tr>
-</table>
+      </form>
+    </tr>
 
+  </table>
 </body>
 </html>
-

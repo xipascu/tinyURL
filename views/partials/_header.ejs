@@ -1,29 +1,22 @@
-<nav class="navbar navbar-default" role="navigation">
-
-<div class="container-fluid">
-<div class="navbar-header">
-<a class="navbar-brand" href="#">
-<span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
-</a>
-      
 <% if (user) { %> 
 <p>Your e-mail is: <%= user.email %></p>
 <form action="/logout" method="POST">
-<input type= "submit" value="Logout" />
+  <input type= "submit" value="Logout" />
 </form>
-<% } else { %>
-<form action="/login" method="GET">
-<input type= "submit" value= "Login">
-</form>
-<form action="/register" method = "GET">
-<input type="submit" value="Register">
-</form>
-<% } %>
-          
-<p><a href="/">Link to home screen</a></p>
-<p>Create a new <a href="/urls/new">TINY URL</a> here.</p>
 
-</div>
-          
-</div>
-</nav>
+<% } else { %>
+
+<form action="/login" method="GET">
+  <input type= "submit" value= "Login">
+</form>
+
+<form action="/register" method = "GET">
+  <input type="submit" value="Register">
+</form>
+
+<% } %>
+
+<header>
+  <h2>Link to <a href="/">home screen and current links</a> or...</h2>
+  <p>Create a new <a href="/urls/new">TINY URL</a>.</p>
+</header>

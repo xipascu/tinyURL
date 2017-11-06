@@ -4,12 +4,13 @@
   <body style="font-size:20px; padding:50px;">
     <% include partials/_header %>
     <form action="/register" method="POST" style="margin:150px;">
-      <label for="email">Enter your E-mail address: </label>
+      <label for="email">Register with your e-mail address: </label>
       <input id="email" type="email" name="email" placeholder="ex: tinyApp@lighthouselabs.ca" style="width: 300px"> 
       
-      <label for="password">Password: </label>
-      <input id="password" type="password" name="password" style="width: 300px"> 
-      
+    <p>
+      <label for="password">Create a password: </label>
+      <input id="password" type="password" name="password" style="width: 300px">
+    </p>
       <input type="submit" value="Submit">
     </form>
   </body>

@@ -1,79 +1,75 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const PORT = process.env.PORT || 8080;
-const cookieParser = require('cookie-parser');
-const app = express(); 
-
-app.use(cookieParser());
-//view engine - what allows you to use ejs
+var express = require("express");
+var cookieParser = require('cookie-parser')
+var app = express()
+app.use(cookieParser())
+var PORT = process.env.PORT || 8080;
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({extended: true}));
-
-  //functions module
-var outerFunct = require("./indexShort");
+const changesF = require("./functions");
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 const urlDatabase = {
   "b2xVn2": {
     url: "http://www.lighthouselabs.ca",
     userID: "userRandomID"
   },
-  "9sm5xK": { 
+  "9sm5xK": {
     url: "http://www.google.com",
     userID: "user2RandomID"
   }
 };
-//
-const users = { 
+
+const users = {
   "userRandomID": {
-    id: "userRandomID", 
-    email: "user1@user1.com", 
-    password: "123"
+    id: "userRandomID",
+    email: "user@user.com",
+    password: bcrypt.hashSync("user", 10)
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@user2.com", 
-    password: "123"
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user1@user.com",
+    password: bcrypt.hashSync("user", 10)
   }
-};
-//
+}
+
 app.use((req, res, next) => {
-  res.locals.user = outerFunct.withID(req.cookies.user_ID, users);
+  res.locals.user = changesF.idCheck(req.cookies.user_id, users);
   next();
 });
-//..
-app.use("/urls", (req, res, next) => {
-  outerFunct.notAllowed(req, res, next);
+
+app.use('/urls', (req, res, next) => {
+  changesF.refused(req, res, next);
 });
 
-//Root Routes
-//
-app.get("/register", (req, res) => {
-  let templateVars = {
-    user: users[req.cookies["user_id"]]
-  };
-  res.render("register", templateVars);
+// GET
+app.get("/u/:shortURL", (req, res) => {
+  let longURL = urlDatabase[req.params.shortURL].url;
+  res.redirect(longURL);
 });
-//
-app.get("/login", (req,res) => {
-  let templateVars = {
-    user: users[req.cookies["user_id"]]
-  };
-  res.render("login_index", templateVars);
-});
-//
+
 app.get("/", (req, res) => {
-  res.redirect("/urls"); 
+  res.redirect("/urls");
 });
-//..//
+
 app.get("/urls", (req, res) => {
-  const userURLS = outerFunct.findUID(urlDatabase, req.cookies["user_id"])
-    let templateVars = {
-      urls: userURLS,
-      user: users[req.cookies["user_id"]]
-    };
-    res.render("urls_index", templateVars);
+  const usersURLS = changesF.userUrls(urlDatabase, req.cookies["user_id"])
+  let templateVars = {
+    urls: usersURLS,
+    user: users[req.cookies["user_id"]]
+  };
+  res.render("urls_index", templateVars);
 });
-//..
+
+app.get("/urls/new", (req, res) => {
+  let templateVars = {
+    urls: urlDatabase,
+    user: users[req.cookies["user_id"]]
+  };
+  res.render("urls_new", templateVars);
+});
+
 app.get("/urls/:id", (req, res) => {
   const tinyU = req.params.id;
   if (urlDatabase[req.params.id].userID === req.cookies["user_id"]) {
@@ -85,110 +81,97 @@ app.get("/urls/:id", (req, res) => {
     res.render("urls_show", templateVars);
   } else {
     res.status(418);
-    res.send("We're sorry, that's not yours.")
+    res.send("Oops! This doesn't belong to you. Try singing in!");
   }
 });
-//
-app.get("/urls/new", (req, res) => {
+
+app.get("/register", (req, res) => {
   let templateVars = {
-    urls: urlDatabase,
     user: users[req.cookies["user_id"]]
-    };  
-  res.render("urls_new", templateVars);
-});
-//
-app.get("/u/:shortURL", (req, res) => {
-    //request parameters on short url
-  let longURL = urlDatabase[req.params.shortURL].url;
-  res.redirect(longURL);
-});
-
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
-
-
-
-
-
-
-
-  //this should output any request parameters in terminal
-//
-app.post("/urls", (req, res) => {
-  const shortURL = outerFunct.generateRandomString(6);
-  urlDatabase[shortURL] = {
-    url: req.body.longURL,
-    userID: req.cookies.user_id
   };
-  res.redirect("/urls/" + shortURL);    
+  res.render("register_index", templateVars);
 });
-//
-app.post("/urls/:id/delete", (req, res) => {
-  if (urlDatabase[req.params.id].userID === req.cookies["user_id"]) {
-    delete urlDatabase[req.params.id];
-    res.redirect("/urls");
+
+app.get("/login", (req, res) => {
+  let templateVars = {
+    user: users[req.cookies["user_id"]]
+  };
+  res.render("login_index", templateVars);
+});
+
+
+
+
+// POST
+app.post("/register", (req, res) => {
+  const { email, password } = req.body;
+  if (email === "" || password === "") {
+    res.status(400);
+    res.send("Please input your e-mail and choose a password. <a href=/register>Try again.</a>");
   } else {
-    res.redirect("/")
+    const user = changesF.userCheck(email, password, users);
+    if (user) {
+      res.send("Already created. <a href=/register>Please try again</a>");
+    } else {
+      const userID = changesF.generateRandomString(6);
+      users[userID] = {
+        id: userID,
+        email: req.body.email,
+        password: req.body.password
+      }
+      res.cookie("user_id", userID);
+      res.locals.user = changesF.idCheck(req.cookies.user_id, users);
+      res.redirect("/urls");
+    }
   }
-  res.redirect("/urls");
 });
-//
-app.post("/urls/:id", (req,res) => {
-  if (urlDatabase[req.params.id].userID === req.cookies["user_id"]) {
-    urlDatabase[req.params.id].url = req.body.longURL;
-    res.redirect("/urls");
-  } else { 
-    res.redirect("/urls/" + req.params.id);
-  }
-});
-//
-app.post("/login", (req,res) => {
-  const {email, password} = req.body;
-  const user = outerFunct.authentication(email, password, users);
+
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  const user = changesF.userCheck(email, password, users);
   if (user) {
     res.cookie("user_id", user.id);
-    res.locals.user = outerFunct.withID(req.cookies["user_id"], users);
+    res.locals.user = changesF.idCheck(req.cookies["user_id"], users);
     res.redirect("/urls");
   } else {
     res.status(403);
-    res.send("The information you provided did not match, please <a href=/login>try again</a>.")
+    res.send("The information provided did not match. <a href=/login >Please try again</a>");
   }
 });
-//
-app.post("/logout", (req,res) => {
-  res.clearCookie("user_id");
+
+app.post("/urls", (req, res) => {
+  const shortURL = changesF.generateRandomString(6);
+  urlDatabase[shortURL] = {
+    url: req.body.longURL,
+    userID: req.cookies.user_id
+  }
+  res.redirect("/urls/" + shortURL);
+});
+
+app.post("/urls/:id/delete", (req, res) => {
+  if (urlDatabase[req.params.id].userID === req.cookies["user_id"]) {
+    delete urlDatabase[req.params.id];
+  }
   res.redirect("/urls");
 });
-//
-app.post("/register", (req,res) => {
-  //http://www.summa.com/blog/securing-node.js-the-missing-ingredient-in-your-password-composition
-  const {email, password} = req.body;
-    //if no email, return error 
-    if (email === "" || password === "") {
-      res.status(400);
-      res.send("You're missing an email and/or a password. Please try again.")
-    } else {
-      const user = outerFunct.authentication(email, password, users);
-      if (user) {
-        res.send("Already created, please try again.");
-      } else {
-        const userID = outerFunct.generateRandomString(6);
-        users[userID] = {
-          id: userID,
-          email: req.body.email,
-          password: req.body.password
-        }
-      res.cookie("user_id", userID);
-      res.locals.user = outerFunct.withID(req.cookies.user_id, users);
-      res.redirect("/urls");
-      }
-    }
+
+app.post("/urls/:id", (req, res) => {
+  if (urlDatabase[req.params.id].userID === req.cookies["user_id"]) {
+    urlDatabase[req.params.id].url = req.body.longURL;
+    res.redirect("/urls");
+  } else {
+    res.redirect("/urls/" + req.params.id);
+  }
 });
 
-//
+app.post("/logout", (req, res) => {
+  res.clearCookie("user_id");
+  res.redirect("/login");
+});
+
+
+
+
 app.listen(PORT, () => {
-  console.log(`Tiny app listening on port ${PORT}!`);
+  console.log(`TinyApp listening on port ${PORT}!`);
 });
-
-

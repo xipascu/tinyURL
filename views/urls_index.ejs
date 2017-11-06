@@ -3,24 +3,21 @@
 <head>
   <title>TinyApp Main</title>
 </head>
+
 <header>
     <% include partials/_header %>
 </header>
 
-<body style="font-size:20px; padding:50px;">
-    <h2>Requested tiny URLs:</h2>
-    <ul>
-        <% for (var tinyU in urls) { %>
-          <li><%= tinyU %> --> 
+<body>
 
-            <a href="<%= urls[tinyU] %>"> <%= urls[tinyU] %></a>
-            
-            <a href = "/urls/<%= tinyU %>">Edit</a> </li>
+  <h2>Tiny URLs: </h2>
+  <% for (const tinyU in urls) { %>
+    <h3><%= tinyU %> --> <a href="<%= urls[tinyU] %>"><%= urls[tinyU] %></a></h3>
+    <a href="/urls/<%= tinyU %>">Edit</a>
+    <form action="/urls/<%= tinyU%>/delete" method="POST">
+    <input id = "deleteURL" type ="submit" value= "Delete" name="deleteURL">
+    </form>
+  <% } %>
 
-          <form action="/urls/<%= tinyU %>/delete" method="POST">
-            <input id = "deleteURL" type ="submit" value= "delete" name="deleteURL">
-          </form>
-        <% } %>
-    </ul>
 </body>
 </html>
