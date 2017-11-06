@@ -5,6 +5,7 @@ app.use(cookieParser())
 var PORT = process.env.PORT || 8080;
 app.set("view engine", "ejs");
 const changesF = require("./functions");
+const bcrypt = require('bcrypt');
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({
   extended: true
@@ -104,7 +105,8 @@ app.get("/login", (req, res) => {
 
 // POST
 app.post("/register", (req, res) => {
-  const { email, password } = req.body;
+  const email = req.body;
+  const password = bcrypt.hashSync(req.body.password, 10);
   if (email === "" || password === "") {
     res.status(400);
     res.send("Please input your e-mail and choose a password. <a href=/register>Try again.</a>");
@@ -117,7 +119,7 @@ app.post("/register", (req, res) => {
       users[userID] = {
         id: userID,
         email: req.body.email,
-        password: req.body.password
+        password: bcrypt.hashSync(req.body.password, 10)
       }
       res.cookie("user_id", userID);
       res.locals.user = changesF.idCheck(req.cookies.user_id, users);
@@ -127,7 +129,8 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const email = req.body.email;
+  const password = req.body.password;
   const user = changesF.userCheck(email, password, users);
   if (user) {
     res.cookie("user_id", user.id);

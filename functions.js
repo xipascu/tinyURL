@@ -9,7 +9,7 @@ function generateRandomString(numChars) {
 
 function userCheck(email, password, users) {
   for (user in users) {
-    if (users[user].email === email && users[user].password === password) {
+    if (users[user].email === email && bcrypt.compareSync(password, users[user].password)) {
       return users[user];
     }
   }
@@ -34,7 +34,6 @@ function userUrls(database, currentUserId) {
   }
   return obj;
 }
-
 
 function idCheck(id, users) {
   for (user in users) {
