@@ -12,12 +12,18 @@
 
   <h2>Tiny URLs: </h2>
   <% for (const tinyU in urls) { %>
-    <h3><%= tinyU %> --> <a href="<%= urls[tinyU] %>"><%= urls[tinyU] %></a></h3>
-    <a href="/urls/<%= tinyU %>">Edit</a>
+    <h3> 
+      <%= tinyU %> --> <a href="<%= urls[tinyU] %>"><%= urls[tinyU] %></a>
+    </h3>
+    <a href="/urls/<%= tinyU %>">
+      <button>Edit</button>
+    </a>
+
     <form action="/urls/<%= tinyU%>/delete" method="POST">
-    <input id = "deleteURL" type ="submit" value= "Delete" name="deleteURL">
+      <input id = "deleteURL" type ="submit" value= "Delete" name="deleteURL">
     </form>
   <% } %>
 
+  <h4>Create your own <a href="/urls/new">Tiny URL here</a>!</h4>
 </body>
 </html>

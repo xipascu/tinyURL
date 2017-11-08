@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 function generateRandomString(numChars) {
   let string = "";
   let charOptions = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
