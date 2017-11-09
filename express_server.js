@@ -95,7 +95,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   const tinyU = req.params.id;
-  if (!urlDatabase[tinyU]) {
+  if (urlDatabase[tinyU]) {
     if (urlDatabase[req.params.id].userID === req.session["user_id"]) {
       let templateVars = {
         shortURL: tinyU,
@@ -161,12 +161,13 @@ app.post("/register", (req, res) => {
   }
 });
 
+
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const user = changesF.userCheck(email, password, users);
   if (user) {
-    res.session.user_id = user.id;
+    req.session.user_id = user.id;
     res.locals.user = changesF.idCheck(req.session["user_id"], users);
     res.redirect("/urls");
   } else {
